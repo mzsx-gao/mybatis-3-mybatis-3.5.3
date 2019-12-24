@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright ${license.git.copyrightYears} the original author or authors.
+       Copyright 2009-2019 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -292,6 +292,7 @@
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -299,6 +300,7 @@
           <testCompilerArgument>${maven.compiler.testCompilerArgument}</testCompilerArgument>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -316,6 +318,8 @@
           </systemProperties>
         </configuration>
       </plugin>
+
+      <!--这里由于编译报错所以注释掉-->
       <!--<plugin>-->
         <!--<groupId>org.apache.maven.plugins</groupId>-->
         <!--<artifactId>maven-pdf-plugin</artifactId>-->
@@ -352,6 +356,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -359,6 +364,7 @@
           <locales>en,es,ja,fr,zh_CN,ko</locales>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -369,6 +375,26 @@
           </excludes>
         </configuration>
       </plugin>
+
+
+      <!-- 自己添加的插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.1.0</version>
+        <!-- 绑定source插件到Maven的生命周期,并在生命周期后执行绑定的source的goal -->
+        <executions>
+          <execution>
+            <!-- 绑定source插件到Maven的生命周期 -->
+            <phase>compile</phase>
+            <!--在生命周期后执行绑定的source插件的goals -->
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
     <resources>
