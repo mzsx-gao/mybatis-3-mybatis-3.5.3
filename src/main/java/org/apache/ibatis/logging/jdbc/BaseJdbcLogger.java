@@ -33,19 +33,22 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.reflection.ArrayUtil;
 
 /**
- * Base class for proxies to do logging.
- *
- * @author Clinton Begin
- * @author Eduardo Macarron
+ * 所有日志增强的抽象基类，用于记录 JDBC 那些方法需要增强，保存运行期间 sql 参数信息
  */
 public abstract class BaseJdbcLogger {
 
+  //保存preparestatment中常用的set方法（占位符赋值）
   protected static final Set<String> SET_METHODS;
+
+  //保存preparestatment中常用的执行sql语句的方法
   protected static final Set<String> EXECUTE_METHODS = new HashSet<>();
 
+  //保存preparestatment中set方法的键值对
   private final Map<Object, Object> columnMap = new HashMap<>();
 
+  //保存preparestatment中set方法的key值
   private final List<Object> columnNames = new ArrayList<>();
+  //保存preparestatment中set方法的value值
   private final List<Object> columnValues = new ArrayList<>();
 
   protected final Log statementLog;
@@ -86,6 +89,7 @@ public abstract class BaseJdbcLogger {
     return columnMap.get(key);
   }
 
+  //打印参数的值以及参数的类型
   protected String getParameterValueString() {
     List<Object> typeList = new ArrayList<>(columnValues.size());
     for (Object value : columnValues) {

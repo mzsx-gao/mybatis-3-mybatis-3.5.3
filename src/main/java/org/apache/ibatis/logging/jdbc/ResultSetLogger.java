@@ -32,9 +32,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 /**
  * ResultSet proxy to add logging.
  *
- * @author Clinton Begin
- * @author Eduardo Macarron
- *
+ * 负责打印数据结果信息
  */
 public final class ResultSetLogger extends BaseJdbcLogger implements InvocationHandler {
 

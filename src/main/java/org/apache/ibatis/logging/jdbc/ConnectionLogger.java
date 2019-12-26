@@ -26,14 +26,15 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
- * Connection proxy to add logging.
+ * Connection proxy to add logging
  *
- * @author Clinton Begin
- * @author Eduardo Macarron
- *
+ * 负责打印连接信息和SQL语句，并创建PreparedStatementLogger；
+ * 通过动态代理，对 connection 进行增强，如果是调用prepareStatement、prepareCall、createStatement 的方法，打印要执行的sql语句
+ * 并返回prepareStatement的代理对象(PreparedStatementLogger)，让prepareStatement也具备日志能力，打印参数;
  */
 public final class ConnectionLogger extends BaseJdbcLogger implements InvocationHandler {
 
+  //真正的连接对象
   private final Connection connection;
 
   private ConnectionLogger(Connection conn, Log statementLog, int queryStack) {
@@ -41,18 +42,25 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
     this.connection = conn;
   }
 
+  //对连接的增强
   @Override
-  public Object invoke(Object proxy, Method method, Object[] params)
-      throws Throwable {
+  public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
     try {
+      //如果是从Object集成的方法则直接忽略
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, params);
       }
+      /**
+       * 如果是调用prepareStatement、prepareCall、createStatement的方法，打印要执行的sql语句
+       * 并返回prepareStatement的代理对象，让prepareStatement也具备日志能力，打印参数
+       */
       if ("prepareStatement".equals(method.getName())) {
         if (isDebugEnabled()) {
+          //打印sql
           debug(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
         }
         PreparedStatement stmt = (PreparedStatement) method.invoke(connection, params);
+        //创建prepareStatement的代理对象PreparedStatementLogger
         stmt = PreparedStatementLogger.newInstance(stmt, statementLog, queryStack);
         return stmt;
       } else if ("prepareCall".equals(method.getName())) {
@@ -76,9 +84,7 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
 
   /**
    * Creates a logging version of a connection.
-   *
-   * @param conn - the original connection
-   * @return - the connection with logging
+   * 创建带日志功能的Connection对象的动态代理，invocationHandler就是该ConnectionLogger
    */
   public static Connection newInstance(Connection conn, Log statementLog, int queryStack) {
     InvocationHandler handler = new ConnectionLogger(conn, statementLog, queryStack);

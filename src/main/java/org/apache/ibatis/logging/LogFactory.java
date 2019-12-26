@@ -18,8 +18,7 @@ package org.apache.ibatis.logging;
 import java.lang.reflect.Constructor;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
+ * 获取日志对象 Log
  */
 public final class LogFactory {
 
