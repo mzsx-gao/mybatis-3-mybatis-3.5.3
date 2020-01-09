@@ -29,8 +29,6 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  * PreparedStatement proxy to add logging.
  *
  * 负责打印参数信息，并创建ResultSetLogger
- *
- *
  */
 public final class PreparedStatementLogger extends BaseJdbcLogger implements InvocationHandler {
 
