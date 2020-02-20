@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.apache.ibatis.cache.decorators;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -30,13 +31,17 @@ import org.apache.ibatis.cache.CacheException;
  * It sets a lock over a cache key when the element is not found in cache.
  * This way, other threads will wait until this element is filled instead of hitting the database.
  *
+ * 阻塞版本的缓存装饰器，保证只有一个线程到数据库去查找指定的key对应的数据
  * @author Eduardo Macarron
  *
  */
 public class BlockingCache implements Cache {
 
+  //阻塞的超时时长
   private long timeout;
+  //被装饰的底层对象，一般是PerpetualCache
   private final Cache delegate;
+  //锁对象集，粒度到key值
   private final ConcurrentHashMap<Object, ReentrantLock> locks;
 
   public BlockingCache(Cache delegate) {
@@ -65,9 +70,9 @@ public class BlockingCache implements Cache {
 
   @Override
   public Object getObject(Object key) {
-    acquireLock(key);
+    acquireLock(key);//根据key获得锁对象，获取锁成功加锁，获取锁失败阻塞一段时间重试
     Object value = delegate.getObject(key);
-    if (value != null) {
+    if (value != null) {//获取数据成功的，要释放锁
       releaseLock(key);
     }
     return value;
@@ -89,7 +94,9 @@ public class BlockingCache implements Cache {
     return locks.computeIfAbsent(key, k -> new ReentrantLock());
   }
 
+  //根据key获得锁对象，获取锁成功加锁，获取锁失败阻塞一段时间重试
   private void acquireLock(Object key) {
+    //获得锁对象
     Lock lock = getLockForKey(key);
     if (timeout > 0) {
       try {

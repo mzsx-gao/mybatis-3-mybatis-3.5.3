@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class PooledConnection implements InvocationHandler {
   private static final Class<?>[] IFACES = new Class<?>[] { Connection.class };
 
   private final int hashCode;
-  //记录当前连接所在的数据源对象，本次连接是有这个数据源创建的，关闭后也是回到这个数据源；
+  //记录当前连接所在的数据源对象，本次连接是由这个数据源创建的，关闭后也是回到这个数据源；
   private final PooledDataSource dataSource;
   //真正的连接对象
   private final Connection realConnection;
