@@ -33,7 +33,7 @@ class PooledConnection implements InvocationHandler {
   private static final Class<?>[] IFACES = new Class<?>[] { Connection.class };
 
   private final int hashCode;
-  //记录当前连接所在的数据源对象，本次连接是有这个数据源创建的，关闭后也是回到这个数据源；
+  //记录当前连接所在的数据源对象，本次连接是由这个数据源创建的，关闭后也是回到这个数据源；
   private final PooledDataSource dataSource;
   //真正的连接对象
   private final Connection realConnection;

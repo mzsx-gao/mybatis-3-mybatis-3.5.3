@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -65,8 +65,10 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
         return method.invoke(this, params);
       }
       Object o = method.invoke(rs, params);
+      //执行result.next方法，判断是否还有数据
       if ("next".equals(method.getName())) {
         if ((Boolean) o) {
+          //如果还有数据，计数器rows加一
           rows++;
           if (isTraceEnabled()) {
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -78,6 +80,7 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
             printColumnValues(columnCount);
           }
         } else {
+          //如果没有数据了，打印rows，打印查询出来的数据条数
           debug("     Total: " + rows, false);
         }
       }

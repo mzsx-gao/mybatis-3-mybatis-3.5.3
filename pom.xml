@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2009-2019 the original author or authors.
+       Copyright 2009-2020 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -375,24 +375,24 @@
         </executions>
       </plugin>
 
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-site-plugin</artifactId>-->
-        <!--<configuration>-->
-          <!--<locales>en,es,ja,fr,zh_CN,ko</locales>-->
-        <!--</configuration>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <locales>en,es,ja,fr,zh_CN,ko</locales>
+        </configuration>
+      </plugin>
 
-      <!--<plugin>-->
-        <!--<groupId>org.jacoco</groupId>-->
-        <!--<artifactId>jacoco-maven-plugin</artifactId>-->
-        <!--<configuration>-->
-          <!--<excludes>-->
-            <!--<exclude>org.apache.ibatis.ognl.*</exclude>-->
-            <!--<exclude>org.apache.ibatis.javassist.*</exclude>-->
-          <!--</excludes>-->
-        <!--</configuration>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org.apache.ibatis.ognl.*</exclude>
+            <exclude>org.apache.ibatis.javassist.*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
 
     </plugins>
 

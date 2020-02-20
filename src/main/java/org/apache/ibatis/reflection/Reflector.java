@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -49,25 +49,28 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
  */
 public class Reflector {
 
-  private final Class<?> type;
-  private final String[] readablePropertyNames;
-  private final String[] writablePropertyNames;
-  private final Map<String, Invoker> setMethods = new HashMap<>();
-  private final Map<String, Invoker> getMethods = new HashMap<>();
-  private final Map<String, Class<?>> setTypes = new HashMap<>();
-  private final Map<String, Class<?>> getTypes = new HashMap<>();
-  private Constructor<?> defaultConstructor;
+  private final Class<?> type;//对应的class
+  private final String[] readablePropertyNames;//可读属性的名称集合，存在get方法即可读
+  private final String[] writablePropertyNames;//可写属性的名称集合，存在set方法即可写
+  private final Map<String, Invoker> setMethods = new HashMap<>();//保存属性相关的set方法
+  private final Map<String, Invoker> getMethods = new HashMap<>();//保存属性相关的get方法
+  private final Map<String, Class<?>> setTypes = new HashMap<>();//保存属性相关的set方法入参类型
+  private final Map<String, Class<?>> getTypes = new HashMap<>();//保存属性相关的get方法返回类型
+  private Constructor<?> defaultConstructor;//class默认的构造函数
 
+  //记录所有属性的名称集合
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
   public Reflector(Class<?> clazz) {
     type = clazz;
-    addDefaultConstructor(clazz);
-    addGetMethods(clazz);
-    addSetMethods(clazz);
-    addFields(clazz);
-    readablePropertyNames = getMethods.keySet().toArray(new String[0]);
-    writablePropertyNames = setMethods.keySet().toArray(new String[0]);
+    addDefaultConstructor(clazz);//获取clazz的默认构造函数
+    addGetMethods(clazz);//处理clazz中的get方法信息，填充getMethods、getTypes
+    addSetMethods(clazz);//处理clazz中的set方法信息，填充setMethods、setTypes
+    addFields(clazz);//处理没有get、set方法的属性
+    //根据get、set方法初始化可读属性集合和可写属性集合
+    readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
+    writablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
+    //初始化caseInsensitivePropertyMap
     for (String propName : readablePropertyNames) {
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
     }
