@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -38,10 +38,12 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 public class DefaultParameterHandler implements ParameterHandler {
 
+  //typeHandler注册中心
   private final TypeHandlerRegistry typeHandlerRegistry;
-
+  //对应的sql节点的信息
   private final MappedStatement mappedStatement;
   private final Object parameterObject;
+  //SQL语句信息，其中还包括占位符和参数名称信息
   private final BoundSql boundSql;
   private final Configuration configuration;
 
@@ -61,12 +63,14 @@ public class DefaultParameterHandler implements ParameterHandler {
   @Override
   public void setParameters(PreparedStatement ps) {
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
+    //从boundSql中获取sql语句的占位符对应的参数信息
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {
+      //遍历这个参数列表，把参数设置到PreparedStatement中
       for (int i = 0; i < parameterMappings.size(); i++) {
         ParameterMapping parameterMapping = parameterMappings.get(i);
         if (parameterMapping.getMode() != ParameterMode.OUT) {
-          Object value;
+          Object value;//绑定的实参
           String propertyName = parameterMapping.getProperty();
           if (boundSql.hasAdditionalParameter(propertyName)) { // issue #448 ask first for additional params
             value = boundSql.getAdditionalParameter(propertyName);
@@ -84,6 +88,7 @@ public class DefaultParameterHandler implements ParameterHandler {
             jdbcType = configuration.getJdbcTypeForNull();
           }
           try {
+            //为statment中的占位符绑定参数
             typeHandler.setParameter(ps, i + 1, value, jdbcType);
           } catch (TypeException | SQLException e) {
             throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);

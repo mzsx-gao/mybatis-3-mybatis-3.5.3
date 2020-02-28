@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -151,8 +151,10 @@ public abstract class BaseExecutor implements Executor {
       queryStack++;
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
+        //针对调用存储过程的结果处理
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+        //缓存未命中，从数据库加载数据
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
@@ -317,14 +319,19 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  //真正访问数据库获取结果的方法
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
+    //在缓存中添加占位符
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
+      //调用抽象方法doQuery，方法查询数据库并返回结果，可选的实现包括：simple、reuse、batch
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
+      //在缓存中删除占位符
       localCache.removeObject(key);
     }
+    //将真正的结果对象添加到一级缓存
     localCache.putObject(key, list);
     if (ms.getStatementType() == StatementType.CALLABLE) {
       localOutputParameterCache.putObject(key, parameter);

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.apache.ibatis.session.Configuration;
 public class XMLStatementBuilder extends BaseBuilder {
 
   private final MapperBuilderAssistant builderAssistant;
-  private final XNode context;
+  private final XNode context;//sql语句节点
   private final String requiredDatabaseId;
 
   public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context) {
@@ -61,6 +61,7 @@ public class XMLStatementBuilder extends BaseBuilder {
       return;
     }
 
+    //根据sql节点的名称获取SqlCommandType（INSERT, UPDATE, DELETE, SELECT）
     String nodeName = context.getNode().getNodeName();
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
@@ -68,7 +69,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     boolean useCache = context.getBooleanAttribute("useCache", isSelect);
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
 
-    // Include Fragments before parsing
+    // 在解析sql语句之前先解析<include>节点
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
 
@@ -78,10 +79,11 @@ public class XMLStatementBuilder extends BaseBuilder {
     String lang = context.getStringAttribute("lang");
     LanguageDriver langDriver = getLanguageDriver(lang);
 
-    // Parse selectKey after includes and remove them.
+    //在解析sql语句之前，处理<selectKey>子节点，并在xml节点中删除
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
+    //根据<selectKey>获取对应的SelectKeyGenerator的id
     KeyGenerator keyGenerator;
     String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
     keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
@@ -93,6 +95,7 @@ public class XMLStatementBuilder extends BaseBuilder {
           ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
     }
 
+    //解析sql语句是解析mapper.xml的核心，实例化sqlSource，使用sqlSource封装sql语句
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
     Integer fetchSize = context.getIntAttribute("fetchSize");
@@ -110,6 +113,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String keyColumn = context.getStringAttribute("keyColumn");
     String resultSets = context.getStringAttribute("resultSets");
 
+    //通过builderAssistant实例化MappedStatement，并注册至configuration对象
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered,

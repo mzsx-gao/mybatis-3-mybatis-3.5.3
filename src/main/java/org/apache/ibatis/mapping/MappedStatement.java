@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,29 +33,29 @@ import org.apache.ibatis.session.Configuration;
  */
 public final class MappedStatement {
 
-  private String resource;
+  private String resource;//节点的完整的id属性，包括命名空间
   private Configuration configuration;
-  private String id;
-  private Integer fetchSize;
-  private Integer timeout;
-  private StatementType statementType;
-  private ResultSetType resultSetType;
-  private SqlSource sqlSource;
-  private Cache cache;
-  private ParameterMap parameterMap;
-  private List<ResultMap> resultMaps;
-  private boolean flushCacheRequired;
-  private boolean useCache;
+  private String id;//节点的id属性
+  private Integer fetchSize;//节点的fetchSize属性,查询数据的条数
+  private Integer timeout;//节点的timeout属性，超时时间
+  private StatementType statementType;//节点的statementType属性,默认值：StatementType.PREPARED;疑问？
+  private ResultSetType resultSetType;//节点的resultSetType属性,jdbc知识
+  private SqlSource sqlSource;//节点中sql语句信息
+  private Cache cache;//对应的二级缓存
+  private ParameterMap parameterMap;//已废弃
+  private List<ResultMap> resultMaps;//节点的resultMaps属性
+  private boolean flushCacheRequired;//节点的flushCache属性是否刷新缓存
+  private boolean useCache;//节点的useCache属性是否使用二级缓存
   private boolean resultOrdered;
-  private SqlCommandType sqlCommandType;
-  private KeyGenerator keyGenerator;
+  private SqlCommandType sqlCommandType;//sql语句的类型，包括：INSERT, UPDATE, DELETE, SELECT
+  private KeyGenerator keyGenerator;//节点keyGenerator属性
   private String[] keyProperties;
   private String[] keyColumns;
-  private boolean hasNestedResultMaps;
+  private boolean hasNestedResultMaps;//是否有嵌套resultMap
   private String databaseId;
   private Log statementLog;
   private LanguageDriver lang;
-  private String[] resultSets;
+  private String[] resultSets;//多结果集使用
 
   MappedStatement() {
     // constructor disabled

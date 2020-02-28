@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     nodeHandlerMap.put("bind", new BindHandler());
   }
 
+  //解析sql脚本，返回SqlSource
   public SqlSource parseScriptNode() {
     MixedSqlNode rootSqlNode = parseDynamicTags(context);
     SqlSource sqlSource;
@@ -71,6 +72,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     } else {
       sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
     }
+    //实际返回的都是StaticSqlSource，可以直接让数据库执行的sql语句，包含？占位符
     return sqlSource;
   }
 

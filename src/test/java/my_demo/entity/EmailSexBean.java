@@ -13,33 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.plugin;
+package my_demo.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import lombok.Data;
 
-/**
- * @author Clinton Begin
- */
-public class InterceptorChain {
+@Data
+public class EmailSexBean {
 
-  private final List<Interceptor> interceptors = new ArrayList<>();
-
-  //为目标对象做增强
-  public Object pluginAll(Object target) {
-    for (Interceptor interceptor : interceptors) {
-      target = interceptor.plugin(target);
-    }
-    return target;
-  }
-
-  public void addInterceptor(Interceptor interceptor) {
-    interceptors.add(interceptor);
-  }
-
-  public List<Interceptor> getInterceptors() {
-    return Collections.unmodifiableList(interceptors);
-  }
+  private Byte sex;
+  private String email;
 
 }

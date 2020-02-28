@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -74,7 +74,9 @@ public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      //读取配置文件
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+      //解析配置文件得到configuration对象，并返回SqlSessionFactory
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);

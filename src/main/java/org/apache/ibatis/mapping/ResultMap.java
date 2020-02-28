@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,20 +35,20 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  */
 public class ResultMap {
-  private Configuration configuration;
+  private Configuration configuration;//configuration对象
 
-  private String id;
-  private Class<?> type;
-  private List<ResultMapping> resultMappings;
-  private List<ResultMapping> idResultMappings;
-  private List<ResultMapping> constructorResultMappings;
-  private List<ResultMapping> propertyResultMappings;
-  private Set<String> mappedColumns;
-  private Set<String> mappedProperties;
-  private Discriminator discriminator;
-  private boolean hasNestedResultMaps;
-  private boolean hasNestedQueries;
-  private Boolean autoMapping;
+  private String id;//resultMap的id属性
+  private Class<?> type;//resultMap的type属性
+  private List<ResultMapping> resultMappings;//除discriminator节点之外的映射关系
+  private List<ResultMapping> idResultMappings;//记录ID或者<constructor>中idArg的映射关系
+  private List<ResultMapping> constructorResultMappings;////记录<constructor>标志的映射关系
+  private List<ResultMapping> propertyResultMappings;//记录非<constructor>标志的映射关系
+  private Set<String> mappedColumns;//记录所有有映射关系的columns字段
+  private Set<String> mappedProperties;//记录所有有映射关系的property字段
+  private Discriminator discriminator;//鉴别器，对应discriminator节点
+  private boolean hasNestedResultMaps;//是否有嵌套结果映射
+  private boolean hasNestedQueries;////是否有嵌套查询
+  private Boolean autoMapping;//是否开启了自动映射
 
   private ResultMap() {
   }

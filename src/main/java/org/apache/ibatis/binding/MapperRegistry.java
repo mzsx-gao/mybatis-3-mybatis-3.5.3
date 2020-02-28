@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ public class MapperRegistry {
     return knownMappers.containsKey(type);
   }
 
+  //将mapper接口的工厂类添加到mapper注册中心
   public <T> void addMapper(Class<T> type) {
     if (type.isInterface()) {
       if (hasMapper(type)) {
@@ -64,6 +65,7 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
+        //实例化Mapper接口的代理工程类，并将信息添加至knownMappers
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the

@@ -13,33 +13,26 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.plugin;
+package my_demo.mapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import my_demo.entity.EmailSexBean;
+import my_demo.entity.TUser;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
+import java.util.Map;
 
-/**
- * @author Clinton Begin
- */
-public class InterceptorChain {
+public interface TUserMapper {
 
-  private final List<Interceptor> interceptors = new ArrayList<>();
+  TUser selectByPrimaryKey(Integer id);
 
-  //为目标对象做增强
-  public Object pluginAll(Object target) {
-    for (Interceptor interceptor : interceptors) {
-      target = interceptor.plugin(target);
-    }
-    return target;
-  }
+  List<TUser> selectAll();
 
-  public void addInterceptor(Interceptor interceptor) {
-    interceptors.add(interceptor);
-  }
+  List<TUser> selectByEmailAndSex1(Map<String, Object> param);
 
-  public List<Interceptor> getInterceptors() {
-    return Collections.unmodifiableList(interceptors);
-  }
+  List<TUser> selectByEmailAndSex2(@Param("email") String email, @Param("sex") Byte sex);
+
+  List<TUser> selectByEmailAndSex3(EmailSexBean esb);
+
 
 }

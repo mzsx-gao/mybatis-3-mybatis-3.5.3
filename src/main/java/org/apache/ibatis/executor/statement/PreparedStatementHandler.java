@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     ps.addBatch();
   }
 
+  //执行sql语句查询，并通过resultSetHandler处理结果映射
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     PreparedStatement ps = (PreparedStatement) statement;
@@ -72,14 +73,18 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.handleCursorResultSets(ps);
   }
 
+  //使用底层的prepareStatement对象来完成对数据库的操作
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();
+    //根据mappedStatement.getKeyGenerator字段，创建prepareStatement
     if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
       String[] keyColumnNames = mappedStatement.getKeyColumns();
       if (keyColumnNames == null) {
+        //返回数据库生成的主键
         return connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
       } else {
+        //返回数据库生成的主键填充至keyColumnNames中指定的列
         return connection.prepareStatement(sql, keyColumnNames);
       }
     } else if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {

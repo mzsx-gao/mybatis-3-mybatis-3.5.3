@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * 实现了InvocationHandler接口，它是增强mapper接口的实现
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -89,13 +90,14 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
+    //从缓存中获取mapperMethod对象，如果缓存中没有，则创建一个，并添加到缓存中
     final MapperMethod mapperMethod = cachedMapperMethod(method);
+    //调用execute方法执行sql
     return mapperMethod.execute(sqlSession, args);
   }
 
   private MapperMethod cachedMapperMethod(Method method) {
-    return methodCache.computeIfAbsent(method,
-        k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
+    return methodCache.computeIfAbsent(method, k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }
 
   private Object invokeDefaultMethodJava9(Object proxy, Method method, Object[] args)

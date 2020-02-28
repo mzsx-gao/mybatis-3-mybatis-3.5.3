@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,30 +26,31 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.session.ResultHandler;
 
 /**
+ * Executor实现的基础；功能包括：创建statement对象，为sql语句绑定参数，执行增删改查等SQL语句、将结果映射集进行转化
  * @author Clinton Begin
  */
 public interface StatementHandler {
+  //从连接中获取一个Statement
+  Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException;
 
-  Statement prepare(Connection connection, Integer transactionTimeout)
-      throws SQLException;
+  //占位符处理，绑定statement执行时需要的实参
+  void parameterize(Statement statement) throws SQLException;
 
-  void parameterize(Statement statement)
-      throws SQLException;
+  //批量执行sql语句
+  void batch(Statement statement) throws SQLException;
 
-  void batch(Statement statement)
-      throws SQLException;
+  //执行update/insert/delete语句
+  int update(Statement statement) throws SQLException;
 
-  int update(Statement statement)
-      throws SQLException;
+  //执行select语句
+  <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException;
 
-  <E> List<E> query(Statement statement, ResultHandler resultHandler)
-      throws SQLException;
+  <E> Cursor<E> queryCursor(Statement statement) throws SQLException;
 
-  <E> Cursor<E> queryCursor(Statement statement)
-      throws SQLException;
-
+  //获取sql语句
   BoundSql getBoundSql();
 
+  //获取封装的参数处理器
   ParameterHandler getParameterHandler();
 
 }

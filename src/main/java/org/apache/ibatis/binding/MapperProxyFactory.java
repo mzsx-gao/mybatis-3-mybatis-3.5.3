@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,11 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * 用于生成mapper接口动态代理的实例对象；
  * @author Lasse Voss
  */
 public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;
+  // key是mapper接口中的某个方法的method对象，value是对应的MapperMethod，MapperMethod对象不记录任何状态信息，
+  // 所以它可以在多个代理对象之间共享
   private final Map<Method, MapperMethod> methodCache = new ConcurrentHashMap<>();
 
   public MapperProxyFactory(Class<T> mapperInterface) {

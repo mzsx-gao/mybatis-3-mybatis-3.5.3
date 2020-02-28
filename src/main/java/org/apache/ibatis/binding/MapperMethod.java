@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,7 +46,9 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class MapperMethod {
 
+  //从configuration中获取方法的命名空间.方法名以及SQL语句的类型
   private final SqlCommand command;
+  //封装mapper接口方法的相关信息（入参，返回类型）；
   private final MethodSignature method;
 
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
@@ -56,6 +58,7 @@ public class MapperMethod {
 
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    //根据sql语句类型以及接口返回的参数选择调用不同的
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -82,7 +85,8 @@ public class MapperMethod {
           result = executeForMap(sqlSession, args);
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
-        } else {
+        } else {//处理返回为单一对象的情况
+          //通过参数解析器解析解析参数
           Object param = method.convertArgsToSqlCommandParam(args);
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
@@ -218,14 +222,16 @@ public class MapperMethod {
 
   public static class SqlCommand {
 
+    //sql的名称，命名空间+方法名称
     private final String name;
+    //获取sql语句的类型
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
-      MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
-          configuration);
+      //从configuration中获取mappedStatement
+      MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass, configuration);
       if (ms == null) {
         if (method.getAnnotation(Flush.class) != null) {
           name = null;
@@ -234,8 +240,8 @@ public class MapperMethod {
           throw new BindingException("Invalid bound statement (not found): "
               + mapperInterface.getName() + "." + methodName);
         }
-      } else {
-        name = ms.getId();
+      } else {//如果mappedStatement不为空
+        name = ms.getId();//获取sql的名称，命名空间+方法名称
         type = ms.getSqlCommandType();
         if (type == SqlCommandType.UNKNOWN) {
           throw new BindingException("Unknown execution method for: " + name);
@@ -274,18 +280,19 @@ public class MapperMethod {
 
   public static class MethodSignature {
 
-    private final boolean returnsMany;
-    private final boolean returnsMap;
-    private final boolean returnsVoid;
-    private final boolean returnsCursor;
-    private final boolean returnsOptional;
-    private final Class<?> returnType;
+    private final boolean returnsMany;//返回参数是否为集合类型或数组
+    private final boolean returnsMap;//返回参数是否为map
+    private final boolean returnsVoid;//返回值为空
+    private final boolean returnsCursor;//返回值是否为游标类型
+    private final boolean returnsOptional;//返回值是否为Optional
+    private final Class<?> returnType;//返回值类型
     private final String mapKey;
     private final Integer resultHandlerIndex;
     private final Integer rowBoundsIndex;
     private final ParamNameResolver paramNameResolver;
 
     public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
+      //通过类型解析器获取方法的返回值类型
       Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
       if (resolvedReturnType instanceof Class<?>) {
         this.returnType = (Class<?>) resolvedReturnType;
@@ -294,6 +301,7 @@ public class MapperMethod {
       } else {
         this.returnType = method.getReturnType();
       }
+      //初始化返回值等字段
       this.returnsVoid = void.class.equals(this.returnType);
       this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
       this.returnsCursor = Cursor.class.equals(this.returnType);

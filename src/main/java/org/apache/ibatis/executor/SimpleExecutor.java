@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -58,8 +58,11 @@ public class SimpleExecutor extends BaseExecutor {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
+      //创建StatementHandler对象
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
+      //StatementHandler对象创建stmt,并使用parameterHandler对占位符进行处理
       stmt = prepareStatement(handler, ms.getStatementLog());
+      //通过statementHandler对象调用ResultSetHandler将结果集转化为指定对象返回
       return handler.query(stmt, resultHandler);
     } finally {
       closeStatement(stmt);

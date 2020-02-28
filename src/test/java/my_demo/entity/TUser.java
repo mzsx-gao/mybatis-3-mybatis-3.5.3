@@ -13,33 +13,28 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.plugin;
+package my_demo.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import lombok.Data;
+
+import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author Clinton Begin
- */
-public class InterceptorChain {
+@Data
+public class TUser implements Serializable{
+	
+    private Integer id;
 
-  private final List<Interceptor> interceptors = new ArrayList<>();
+    private String userName;
 
-  //为目标对象做增强
-  public Object pluginAll(Object target) {
-    for (Interceptor interceptor : interceptors) {
-      target = interceptor.plugin(target);
-    }
-    return target;
-  }
+    private String realName;
 
-  public void addInterceptor(Interceptor interceptor) {
-    interceptors.add(interceptor);
-  }
+    private Byte sex;
 
-  public List<Interceptor> getInterceptors() {
-    return Collections.unmodifiableList(interceptors);
-  }
+    private String mobile;
+
+    private String email;
+
+    private String note;
 
 }
