@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -123,9 +123,12 @@ public class MapperAnnotationBuilder {
     this.type = type;
   }
 
+  //解析包含注解的接口，即mapper接口中用注解(如@Select)标识的接口，在mapper.xml文件中没有对应的sql语句的
   public void parse() {
     String resource = type.toString();
+    // 防止重复分析
     if (!configuration.isResourceLoaded(resource)) {
+      // 寻找类名称对应的 resource路径下是否有 xml 配置，如果有则直接解析掉，这样就支持注解和xml一起混合使用了
       loadXmlResource();
       configuration.addLoadedResource(resource);
       assistant.setCurrentNamespace(type.getName());
@@ -134,8 +137,10 @@ public class MapperAnnotationBuilder {
       Method[] methods = type.getMethods();
       for (Method method : methods) {
         try {
+          // 排除桥接方法，桥接方法是为了匹配泛型的类型擦除而由编译器自动引入的，并非用户编写的方法，因此要排除掉。
           // issue #237
           if (!method.isBridge()) {
+            // 解析该方法
             parseStatement(method);
           }
         } catch (IncompleteElementException e) {
@@ -296,9 +301,14 @@ public class MapperAnnotationBuilder {
     return null;
   }
 
+  /**
+   * 解析该方法，主要是解析方法上的注解信息
+   * @param method
+   */
   void parseStatement(Method method) {
     Class<?> parameterTypeClass = getParameterType(method);
     LanguageDriver languageDriver = getLanguageDriver(method);
+    // 通过注解获取SqlSource
     SqlSource sqlSource = getSqlSourceFromAnnotations(method, parameterTypeClass, languageDriver);
     if (sqlSource != null) {
       Options options = method.getAnnotation(Options.class);
@@ -355,6 +365,7 @@ public class MapperAnnotationBuilder {
         resultMapId = parseResultMap(method);
       }
 
+      // 将获取到的信息存入 configuration
       assistant.addMappedStatement(
           mappedStatementId,
           sqlSource,

@@ -39,6 +39,7 @@ public class DynamicContext {
   }
 
   private final ContextMap bindings;
+  // 用于拼装SQL语句片段
   private final StringJoiner sqlBuilder = new StringJoiner(" ");
   private int uniqueNumber = 0;
 

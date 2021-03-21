@@ -44,6 +44,8 @@ public class ParamNameResolver {
    * <li>aMethod(int a, int b) -&gt; {{0, "0"}, {1, "1"}}</li>
    * <li>aMethod(int a, RowBounds rb, int b) -&gt; {{0, "0"}, {2, "1"}}</li>
    * </ul>
+   * 方法输入参数的参数次序表。键为参数次序，值为参数名称或者参数@Param注解的值
+   * 参数顺序->参数名称
    */
   private final SortedMap<Integer, String> names;
 
@@ -79,6 +81,7 @@ public class ParamNameResolver {
           name = String.valueOf(map.size());
         }
       }
+      // 参数顺序->参数名称
       map.put(paramIndex, name);
     }
     names = Collections.unmodifiableSortedMap(map);
@@ -100,12 +103,19 @@ public class ParamNameResolver {
   }
 
   /**
-   * <p>
-   * A single non-special parameter is returned without a name.
-   * Multiple parameters are named using the naming rule.
-   * In addition to the default names, this method also adds the generic names (param1, param2,
-   * ...).
-   * </p>
+   * 将被解析的方法中的参数名称列表与传入的`Object[] args`进行对应，返回对应关系
+   *   如果只有一个参数，直接返回参数
+   *   如果有多个参数，则进行与之前解析出的参数名称进行对应，返回对应关系
+   *   参数名称->参数值
+   *   paramx->参数值
+   *   如:mapper方法---List<TUser> selectByEmailAndSex2(@Param("email") String email, @Param("sex") Byte sex);
+   *   则这里返回的map是:
+   *   {
+   *      "email"->"qq.com"
+   *      "sex"->"1"
+   *      "param1"->"qq.com"
+   *      "param2"->"1"
+   *   }
    */
   public Object getNamedParams(Object[] args) {
     final int paramCount = names.size();
@@ -117,8 +127,10 @@ public class ParamNameResolver {
       final Map<String, Object> param = new ParamMap<>();
       int i = 0;
       for (Map.Entry<Integer, String> entry : names.entrySet()) {
+        // 首先按照类注释中提供的key,存入一遍   【参数的@Param名称 或者 参数排序：实参值】
+        // 注意，key和value交换了位置
         param.put(entry.getValue(), args[entry.getKey()]);
-        // add generic param names (param1, param2, ...)
+        // 再按照param1, param2, ...的命名方式存入一遍
         final String genericParamName = GENERIC_NAME_PREFIX + String.valueOf(i + 1);
         // ensure not to overwrite parameter named with @Param
         if (!names.containsValue(genericParamName)) {
