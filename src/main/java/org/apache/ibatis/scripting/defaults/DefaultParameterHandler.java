@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -60,10 +60,12 @@ public class DefaultParameterHandler implements ParameterHandler {
     return parameterObject;
   }
 
+  //绑定占位符"?"的参数值
   @Override
   public void setParameters(PreparedStatement ps) {
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
-    //从boundSql中获取sql语句的占位符对应的参数信息
+    //从boundSql中获取sql语句的占位符对应的参数信息，这个是在初始化RawSqlSource时设置的属性
+    //#RawSqlSource# sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<>());
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {
       //遍历这个参数列表，把参数设置到PreparedStatement中

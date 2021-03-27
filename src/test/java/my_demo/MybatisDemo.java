@@ -81,22 +81,22 @@ public class MybatisDemo {
     Byte sex = 1;
 
     // 第一种方式使用map
-    Map<String, Object> params = new HashMap<>();
-    params.put("email", email);
-    params.put("sex", sex);
-    List<TUser> list1 = mapper.selectByEmailAndSex1(params);
-    System.out.println(list1.size());
+//    Map<String, Object> params = new HashMap<>();
+//    params.put("email", email);
+//    params.put("sex", sex);
+//    List<TUser> list1 = mapper.selectByEmailAndSex1(params);
+//    System.out.println(list1.size());
 
     // 第二种方式直接使用参数
     List<TUser> list2 = mapper.selectByEmailAndSex2(email, sex);
     System.out.println(list2.size());
 
     // 第三种方式用对象
-    EmailSexBean esb = new EmailSexBean();
-    esb.setEmail(email);
-    esb.setSex(sex);
-    List<TUser> list3 = mapper.selectByEmailAndSex3(esb);
-    System.out.println(list3.size());
+//    EmailSexBean esb = new EmailSexBean();
+//    esb.setEmail(email);
+//    esb.setSex(sex);
+//    List<TUser> list3 = mapper.selectByEmailAndSex3(esb);
+//    System.out.println(list3.size());
   }
 
 

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class SimpleExecutor extends BaseExecutor {
     Connection connection = getConnection(statementLog);
     // 通过不同的StatementHandler，利用connnection创建statement
     stmt = handler.prepare(connection, transaction.getTimeout());
-    // 处理占位符
+    // 处理占位符,替换"?"
     handler.parameterize(stmt);
     return stmt;
   }

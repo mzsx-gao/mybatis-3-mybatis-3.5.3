@@ -32,7 +32,7 @@ public class JdbcDemo {
 	static final String USER = "root";
 	static final String PASS = "root";
 
-	@Test
+//	@Test
 	public void QueryPreparedStatementDemo() {
 		Connection conn = null;
 		PreparedStatement stmt = null;

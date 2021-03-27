@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -141,10 +141,11 @@ public abstract class BaseExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     ErrorContext.instance().resource(ms.getResource()).activity("executing a query").object(ms.getId());
-    if (closed) {
+    if (closed) {// 执行器已经关闭
       throw new ExecutorException("Executor was closed.");
     }
-    if (queryStack == 0 && ms.isFlushCacheRequired()) {
+    if (queryStack == 0 && ms.isFlushCacheRequired()) {// 新的查询栈且要求清除缓存
+      // 新的查询栈，故清除本地缓存，即清除一级缓存
       clearLocalCache();
     }
     List<E> list;
@@ -162,11 +163,13 @@ public abstract class BaseExecutor implements Executor {
       queryStack--;
     }
     if (queryStack == 0) {
+      // 懒加载操作的处理
       for (DeferredLoad deferredLoad : deferredLoads) {
         deferredLoad.load();
       }
       // issue #601
       deferredLoads.clear();
+      // 如果本地缓存的作用域为STATEMENT，则立刻清除本地缓存
       if (configuration.getLocalCacheScope() == LocalCacheScope.STATEMENT) {
         // issue #482
         clearLocalCache();
