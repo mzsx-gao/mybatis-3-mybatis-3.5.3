@@ -64,7 +64,7 @@ public class DefaultParameterHandler implements ParameterHandler {
   @Override
   public void setParameters(PreparedStatement ps) {
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
-    //从boundSql中获取sql语句的占位符对应的参数信息，这个是在初始化RawSqlSource时设置的属性
+    //从boundSql中获取sql语句的占位符对应的参数信息，这个是在初始化RawSqlSource时设置的属性,源码位置:
     //#RawSqlSource# sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<>());
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {
@@ -90,7 +90,7 @@ public class DefaultParameterHandler implements ParameterHandler {
             jdbcType = configuration.getJdbcTypeForNull();
           }
           try {
-            //为statment中的占位符绑定参数
+            //为statment中的占位符绑定参数，内部调用typeHandler的setNonNullParameter()方法
             typeHandler.setParameter(ps, i + 1, value, jdbcType);
           } catch (TypeException | SQLException e) {
             throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);
@@ -99,5 +99,4 @@ public class DefaultParameterHandler implements ParameterHandler {
       }
     }
   }
-
 }

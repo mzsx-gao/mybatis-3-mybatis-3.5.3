@@ -92,6 +92,7 @@ public class CachingExecutor implements Executor {
     return delegate.queryCursor(ms, parameter, rowBounds);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
@@ -101,12 +102,11 @@ public class CachingExecutor implements Executor {
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
-        @SuppressWarnings("unchecked")
         //从二级缓存中获取数据
         List<E> list = (List<E>) tcm.getObject(cache, key);
         if (list == null) {
           //二级缓存为空，才会调用BaseExecutor.query
-          list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+          list = delegate.query(ms, parameterObject, rowBounds, null, key, boundSql);
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
         return list;

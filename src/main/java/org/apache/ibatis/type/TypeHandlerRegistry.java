@@ -53,13 +53,17 @@ import org.apache.ibatis.io.Resources;
  */
 public final class TypeHandlerRegistry {
 
+  // JDBC类型与对应类型处理器映射
   private final Map<JdbcType, TypeHandler<?>>  jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
+  // Java类型与 Map<JdbcType, TypeHandler<?>> 的映射
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
+  // 未知类型的处理器
   private final TypeHandler<Object> unknownTypeHandler = new UnknownTypeHandler(this);
+  // 键为 typeHandler.getClass，值为typeHandler。里面存储了所有的类型处理器
   private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
-
+  // 空的 Map<JdbcType, TypeHandler<?>> 表示该Java类型没有对应的 Map<JdbcType, TypeHandler<?>>
   private static final Map<JdbcType, TypeHandler<?>> NULL_TYPE_HANDLER_MAP = Collections.emptyMap();
-
+  // 默认的枚举类型处理器
   private Class<? extends TypeHandler> defaultEnumTypeHandler = EnumTypeHandler.class;
 
   public TypeHandlerRegistry() {
@@ -213,20 +217,32 @@ public final class TypeHandlerRegistry {
     return getTypeHandler(javaTypeReference.getRawType(), jdbcType);
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * 找出一个类型处理器
+   *
+   * @param type Java类型
+   * @param jdbcType JDBC类型
+   * @param <T> 类型处理器的目标类型
+   * @return 类型处理器
+   */
   private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
     if (ParamMap.class.equals(type)) {
       return null;
     }
+    // 先根据Java类型找到对应的jdbcHandlerMap
     Map<JdbcType, TypeHandler<?>> jdbcHandlerMap = getJdbcHandlerMap(type);
     TypeHandler<?> handler = null;
     if (jdbcHandlerMap != null) {
+      // 根据JDBC类型寻找对应的处理器
       handler = jdbcHandlerMap.get(jdbcType);
       if (handler == null) {
+        // 使用null 作为键进行一次找寻，通过本类源码可知当前jdbcHandlerMap可能是EnumMap，也可能是HashMap
+        // EnumMap不允许键为null，因此总是返回null，HashMap允许键为null，这并不是一次无用功
         handler = jdbcHandlerMap.get(null);
       }
       if (handler == null) {
         // #591
+        // 如果jdbcHandlerMap只有一个类型处理器，就取出它
         handler = pickSoleHandler(jdbcHandlerMap);
       }
     }

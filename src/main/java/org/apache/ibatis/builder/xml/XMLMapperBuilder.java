@@ -277,10 +277,8 @@ public class XMLMapperBuilder extends BaseBuilder {
   private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) throws Exception {
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
     //获取resultmap节点的type属性
-    String type = resultMapNode.getStringAttribute("type",
-        resultMapNode.getStringAttribute("ofType",
-            resultMapNode.getStringAttribute("resultType",
-                resultMapNode.getStringAttribute("javaType"))));
+    String type = resultMapNode.getStringAttribute("type", resultMapNode.getStringAttribute("ofType",
+                    resultMapNode.getStringAttribute("resultType", resultMapNode.getStringAttribute("javaType"))));
     //从别名注册中心获取entity的class对象
     Class<?> typeClass = resolveClass(type);
     if (typeClass == null) {

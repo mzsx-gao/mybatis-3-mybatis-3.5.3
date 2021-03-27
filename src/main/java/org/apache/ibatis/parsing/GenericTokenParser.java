@@ -16,12 +16,16 @@
 package org.apache.ibatis.parsing;
 
 /**
+ * 通用的占位符解析器，类中有唯一的一个 parse 方法，该方法主要完成占位符的定位工作，
+ * 然后把占位符的替换工作交给与其关联的 TokenHandler 处理（从variables中取出对应变量的值返回）
+ *
  * @author Clinton Begin
  */
 public class GenericTokenParser {
 
   private final String openToken;
   private final String closeToken;
+  // 占位符处理器
   private final TokenHandler handler;
 
   public GenericTokenParser(String openToken, String closeToken, TokenHandler handler) {
@@ -30,6 +34,7 @@ public class GenericTokenParser {
     this.handler = handler;
   }
 
+  // 该方法主要 完成占位符的定位工作，然后把占位符的替换工作交给与其关联的 TokenHandler 处理
   public String parse(String text) {
     if (text == null || text.isEmpty()) {
       return "";

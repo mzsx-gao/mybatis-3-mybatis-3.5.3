@@ -47,7 +47,9 @@ public class TextSqlNode implements SqlNode {
 
   @Override
   public boolean apply(DynamicContext context) {
+    //创建通用占位符解析器
     GenericTokenParser parser = createParser(new BindingTokenParser(context, injectionFilter));
+    // 替换掉其中的${}占位符
     context.appendSql(parser.parse(text));
     return true;
   }

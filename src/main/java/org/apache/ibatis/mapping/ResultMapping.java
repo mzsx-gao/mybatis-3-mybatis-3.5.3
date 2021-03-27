@@ -136,6 +136,7 @@ public class ResultMapping {
       // lock down collections
       resultMapping.flags = Collections.unmodifiableList(resultMapping.flags);
       resultMapping.composites = Collections.unmodifiableList(resultMapping.composites);
+      //根据属性的javaType找到对应的typeHandler
       resolveTypeHandler();
       validate();
       return resultMapping;
