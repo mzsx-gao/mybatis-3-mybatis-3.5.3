@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -212,14 +212,18 @@ public class ResolverUtil<T> {
    * @param test an instance of {@link Test} that will be used to filter classes
    * @param packageName the name of the package from which to start scanning for
    *        classes, e.g. {@code net.sourceforge.stripes}
+   * 刷选出指定路径下符合一定条件的类
    */
   public ResolverUtil<T> find(Test test, String packageName) {
+    //获取起始包路径
     String path = getPackagePath(packageName);
 
     try {
+      //找出包中的各个文件
       List<String> children = VFS.getInstance().list(path);
       for (String child : children) {
         if (child.endsWith(".class")) {
+          //如果满足条件，则记录下来(保存到matches属性中)
           addIfMatching(test, child);
         }
       }

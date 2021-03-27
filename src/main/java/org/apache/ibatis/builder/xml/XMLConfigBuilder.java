@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -94,11 +94,16 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.parser = parser;
   }
 
+    /**
+     * 解析配置文件的入口
+     * @return
+     */
   public Configuration parse() {
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    //从根节点开始解析
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
@@ -111,8 +116,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       //解析<settings>节点
       Properties settings = settingsAsProperties(root.evalNode("settings"));
       loadCustomVfs(settings);
+      //解析自己指定的日志系统
       loadCustomLogImpl(settings);
-      //解析<typeAliases>节点
+      //解析<typeAliases>节点，别名扫描注册
       typeAliasesElement(root.evalNode("typeAliases"));
       //解析<plugins>节点
       pluginElement(root.evalNode("plugins"));
@@ -172,6 +178,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     configuration.setLogImpl(logImpl);
   }
 
+  //注册别名和类的映射关系到Configuration对象的typeAliasRegistry中
   private void typeAliasesElement(XNode parent) {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -199,10 +206,14 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        //读取拦截器名称
         String interceptor = child.getStringAttribute("interceptor");
+        //读取拦截器属性
         Properties properties = child.getChildrenAsProperties();
+        //实例化拦截器类
         Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).getDeclaredConstructor().newInstance();
         interceptorInstance.setProperties(properties);
+        //将当前拦截器类加入到拦截器链中
         configuration.addInterceptor(interceptorInstance);
       }
     }
@@ -233,7 +244,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       configuration.setReflectorFactory(factory);
     }
   }
-
+  //解析<properties>标签
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
       Properties defaults = context.getChildrenAsProperties();
@@ -346,6 +357,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     throw new BuilderException("Environment declaration requires a DataSourceFactory.");
   }
 
+  //解析<typeHandlers>节点
   private void typeHandlerElement(XNode parent) {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -376,6 +388,7 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        // 处理mappers的子节点，即mapper节点或者package节点
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);

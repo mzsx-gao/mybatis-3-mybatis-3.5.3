@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ public class Configuration {
   /*指定 MyBatis 应如何自动映射列到字段或属性*/
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
-
+  //<properties>节点信息
   protected Properties variables = new Properties();
 
   protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
@@ -178,13 +178,14 @@ public class Configuration {
 
   /*mapper接口的动态代理注册中心*/
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
-  /*插件集合*/
+
+  /*插件集合,用来支持插件的插入*/
   protected final InterceptorChain interceptorChain = new InterceptorChain();
 
   /*TypeHandler注册中心*/
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
 
-  /*TypeAlias注册中心*/
+  /*TypeAlias注册中心，注册别名和类的映射关系*/
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 

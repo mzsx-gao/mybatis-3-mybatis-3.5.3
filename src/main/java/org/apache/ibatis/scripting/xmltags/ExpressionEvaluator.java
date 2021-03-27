@@ -24,21 +24,35 @@ import java.util.Map;
 import org.apache.ibatis.builder.BuilderException;
 
 /**
+ * MyBatis并没有将 OGNL工具直接暴露给各个 SQL节点使用，而是对 OGNL工具进行了进一步的易用性封装，得到了 ExpressionEvaluator 类，即表达式求值器
  * @author Clinton Begin
  */
 public class ExpressionEvaluator {
 
+  /**
+   * 对结果为true、false形式的表达式求值
+   * 该方法能够对结果为true/false形式的表达式进行求值。
+   * 例如，<if test="name!=null">节点中的 true、false判断便可以直接调用该方法完成
+   */
   public boolean evaluateBoolean(String expression, Object parameterObject) {
+    // 获取表达式的值
     Object value = OgnlCache.getValue(expression, parameterObject);
-    if (value instanceof Boolean) {
+    if (value instanceof Boolean) {// 如果确实是Boolean形式的结果
       return (Boolean) value;
     }
-    if (value instanceof Number) {
+    if (value instanceof Number) {// 如果是数值形式的结果
       return new BigDecimal(String.valueOf(value)).compareTo(BigDecimal.ZERO) != 0;
     }
     return value != null;
   }
 
+  /**
+   * 对结果为迭代形式的表达式进行求值,该方法能对结果为迭代形式的表达式进行求值
+   * 这样，下面节点中的迭代判断便可以直接调用该方法完成
+   * <foreach item="id" collection="array" open="(" separator="，"close=")">
+   *     #{id}
+   * </foreach>
+   */
   public Iterable<?> evaluateIterable(String expression, Object parameterObject) {
     Object value = OgnlCache.getValue(expression, parameterObject);
     if (value == null) {

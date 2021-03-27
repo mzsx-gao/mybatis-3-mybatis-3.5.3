@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -89,13 +89,14 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.resource = resource;
   }
 
+  //解析mapper配置文件
   public void parse() {
     //判断是否已经加载该配置文件
     if (!configuration.isResourceLoaded(resource)) {
       //处理mapper节点
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
-      //注册mapper接口
+      //注册mapper接口到Configuration对象中
       bindMapperForNamespace();
     }
     //处理解析失败的ResultMap节点
