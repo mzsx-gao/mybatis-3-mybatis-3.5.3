@@ -25,7 +25,7 @@
     <relativePath />
   </parent>
 
-  <artifactId>mybatis</artifactId>
+  <artifactId>mybatis-3-mybatis-3.5.3</artifactId>
   <version>3.5.3</version>
   <packaging>jar</packaging>
 

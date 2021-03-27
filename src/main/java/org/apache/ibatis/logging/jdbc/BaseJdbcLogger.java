@@ -45,7 +45,6 @@ public abstract class BaseJdbcLogger {
 
   //保存preparestatment中set方法的键值对
   private final Map<Object, Object> columnMap = new HashMap<>();
-
   //保存preparestatment中set方法的key值
   private final List<Object> columnNames = new ArrayList<>();
   //保存preparestatment中set方法的value值

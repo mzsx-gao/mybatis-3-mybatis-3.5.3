@@ -86,7 +86,7 @@ public class MapperMethod {
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {//处理返回为单一对象的情况
-          //通过参数解析器解析解析参数
+          //通过参数解析器解析参数
           Object param = method.convertArgsToSqlCommandParam(args);
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
