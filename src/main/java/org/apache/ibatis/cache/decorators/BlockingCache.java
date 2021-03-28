@@ -15,25 +15,15 @@
  */
 package org.apache.ibatis.cache.decorators;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheException;
 
 /**
- * Simple blocking decorator
- *
- * Simple and inefficient version of EhCache's BlockingCache decorator.
- * It sets a lock over a cache key when the element is not found in cache.
- * This way, other threads will wait until this element is filled instead of hitting the database.
- *
  * 阻塞版本的缓存装饰器，保证只有一个线程到数据库去查找指定的key对应的数据
- * @author Eduardo Macarron
- *
  */
 public class BlockingCache implements Cache {
 

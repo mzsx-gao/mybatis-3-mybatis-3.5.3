@@ -1,21 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-
-       Copyright 2009-2020 the original author or authors.
-
-       Licensed under the Apache License, Version 2.0 (the "License");
-       you may not use this file except in compliance with the License.
-       You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-       Unless required by applicable law or agreed to in writing, software
-       distributed under the License is distributed on an "AS IS" BASIS,
-       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-       See the License for the specific language governing permissions and
-       limitations under the License.
-
--->
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
@@ -24,9 +7,14 @@
  	<settings>
 		<!-- 设置自动驼峰转换 -->
 		<setting name="mapUnderscoreToCamelCase" value="true" />
-		<!-- 开启懒加载 -->
-		 <!-- 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载。默认：true -->
+		<!--全局全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为true-->
+		<setting name="cacheEnabled" value="false"/>
+
+		<!--延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。 特定关联关系中可通过设置fetchType属性来覆盖该项的开关状态。默认值为false -->
+		<setting name="lazyLoadingEnabled" value="false"/>
+		 <!-- 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载。默认：false -->
 	  	<setting name="aggressiveLazyLoading" value="false" />
+
 	</settings>
 
 	<!-- 别名定义 -->
@@ -39,7 +27,6 @@
       <property name="threshold" value="10"></property>
     </plugin>
   </plugins>
-
 
 	<!--配置environment环境 -->
 	<environments default="development">
@@ -59,7 +46,7 @@
 	<mappers>
 		<!--直接映射到相应的mapper文件 -->
 		<mapper resource="sqlmapper/TUserMapper.xml"/>
+		<mapper resource="sqlmapper/TJobHistoryMapper.xml"/>
 	</mappers>
 
-
-</configuration>  
+</configuration>

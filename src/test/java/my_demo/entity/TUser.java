@@ -37,4 +37,6 @@ public class TUser implements Serializable{
 
     private String note;
 
+    private List<TJobHistory> jobs;
+
 }

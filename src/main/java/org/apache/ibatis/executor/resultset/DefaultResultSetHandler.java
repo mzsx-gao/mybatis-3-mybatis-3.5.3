@@ -301,6 +301,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         }
     }
 
+    //根据映射规则（resultMap）对结果集进行转化，转换成目标对象以后放入multipleResults中
     private void handleResultSet(ResultSetWrapper rsw, ResultMap resultMap, List<Object> multipleResults,
                                  ResultMapping parentMapping) throws SQLException {
         try {
@@ -497,7 +498,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     private Object getPropertyMappingValue(ResultSet rs, MetaObject metaResultObject, ResultMapping propertyMapping,
                                            ResultLoaderMap lazyLoader, String columnPrefix)
             throws SQLException {
-        if (propertyMapping.getNestedQueryId() != null) {
+        if (propertyMapping.getNestedQueryId() != null) {//处理嵌套查询
             return getNestedQueryMappingValue(rs, metaResultObject, propertyMapping, lazyLoader, columnPrefix);
         } else if (propertyMapping.getResultSet() != null) {
             addPendingChildRelation(rs, metaResultObject, propertyMapping);   // TODO is that OK?
@@ -807,21 +808,22 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         return value;
     }
 
+    //处理嵌套查询
     private Object getNestedQueryMappingValue(ResultSet rs, MetaObject metaResultObject,
                                               ResultMapping propertyMapping, ResultLoaderMap lazyLoader,
-                                              String columnPrefix)
-            throws SQLException {
+                                              String columnPrefix) throws SQLException {
         final String nestedQueryId = propertyMapping.getNestedQueryId();
         final String property = propertyMapping.getProperty();
         final MappedStatement nestedQuery = configuration.getMappedStatement(nestedQueryId);
+        //传给嵌套查询的参数类型
         final Class<?> nestedQueryParameterType = nestedQuery.getParameterMap().getType();
+        //传给嵌套查询的参数值
         final Object nestedQueryParameterObject = prepareParameterForNestedQuery(rs, propertyMapping,
                 nestedQueryParameterType, columnPrefix);
         Object value = null;
         if (nestedQueryParameterObject != null) {
             final BoundSql nestedBoundSql = nestedQuery.getBoundSql(nestedQueryParameterObject);
-            final CacheKey key = executor.createCacheKey(nestedQuery, nestedQueryParameterObject, RowBounds.DEFAULT,
-                    nestedBoundSql);
+            final CacheKey key = executor.createCacheKey(nestedQuery, nestedQueryParameterObject, RowBounds.DEFAULT, nestedBoundSql);
             final Class<?> targetType = propertyMapping.getJavaType();
             if (executor.isCached(nestedQuery, key)) {
                 executor.deferLoad(nestedQuery, metaResultObject, property, key, targetType);
@@ -833,6 +835,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
                     lazyLoader.addLoader(property, metaResultObject, resultLoader);
                     value = DEFERRED;
                 } else {
+                    //内部递归调用Executor的query方法
                     value = resultLoader.loadResult();
                 }
             }

@@ -34,5 +34,9 @@ public interface TUserMapper {
 
   List<TUser> selectByEmailAndSex3(EmailSexBean esb);
 
+  List<TUser> selectUserJobs1();
+
+  List<TUser> selectUserJobs2();
+
 
 }
