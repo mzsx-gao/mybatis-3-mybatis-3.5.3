@@ -422,6 +422,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
     //4.读取resultSet中的一行记录并进行映射，转化并返回目标对象
     private Object getRowValue(ResultSetWrapper rsw, ResultMap resultMap, String columnPrefix) throws SQLException {
+        //缓存懒加载的信息
         final ResultLoaderMap lazyLoader = new ResultLoaderMap();
         //4.1 根据resultMap的type属性，实例化目标对象
         Object rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);
@@ -650,7 +651,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         if (resultObject != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
             final List<ResultMapping> propertyMappings = resultMap.getPropertyResultMappings();
             for (ResultMapping propertyMapping : propertyMappings) {
-                // issue gcode #109 && issue #149
+                // 如果有一个属性是懒加载，则生成这个对象的代理对象
                 if (propertyMapping.getNestedQueryId() != null && propertyMapping.isLazy()) {
                     resultObject = configuration.getProxyFactory().createProxy(resultObject, lazyLoader,
                             configuration, objectFactory, constructorArgTypes, constructorArgs);
@@ -832,6 +833,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
                 final ResultLoader resultLoader = new ResultLoader(configuration, executor, nestedQuery,
                         nestedQueryParameterObject, targetType, key, nestedBoundSql);
                 if (propertyMapping.isLazy()) {
+                    //懒加载处理
                     lazyLoader.addLoader(property, metaResultObject, resultLoader);
                     value = DEFERRED;
                 } else {

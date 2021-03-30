@@ -48,6 +48,7 @@ public class Plugin implements InvocationHandler {
     //解析Interceptor上@Intercepts注解得到的signature信息
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
+    //获取target对象实现的接口中可以被interfacetor拦截的接口
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       //使用jdk的方式创建动态代理

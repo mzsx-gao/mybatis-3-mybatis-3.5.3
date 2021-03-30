@@ -15,6 +15,8 @@
 		 <!-- 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载。默认：false -->
 	  	<setting name="aggressiveLazyLoading" value="false" />
 
+        <setting name="proxyFactory" value="CGLIB"/>
+
 	</settings>
 
 	<!-- 别名定义 -->
@@ -23,9 +25,11 @@
 	</typeAliases>
 
   <plugins>
-    <plugin interceptor="my_demo.interceptors.ThresholdInterceptor">
-      <property name="threshold" value="10"></property>
-    </plugin>
+      <plugin interceptor="my_demo.interceptors.ThresholdInterceptor">
+          <property name="threshold" value="10"></property>
+      </plugin>
+      <!--<plugin interceptor="my_demo.interceptors.ExecutorInterceptor"/>-->
+      <!--<plugin interceptor="my_demo.interceptors.ResultSetHandInterceptor"/>-->
   </plugins>
 
 	<!--配置environment环境 -->

@@ -66,6 +66,7 @@ public class ResultLoader {
     this.creatorThreadId = Thread.currentThread().getId();
   }
 
+  //一般是在处理嵌套查询时调用
   public Object loadResult() throws SQLException {
     List<Object> list = selectList();
     resultObject = resultExtractor.extractObjectFromList(list, targetType);

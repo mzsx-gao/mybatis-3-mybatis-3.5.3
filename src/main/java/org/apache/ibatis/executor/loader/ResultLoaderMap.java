@@ -215,7 +215,7 @@ public class ResultLoaderMap {
         this.resultLoader = new ResultLoader(old.configuration, new ClosedExecutor(), old.mappedStatement,
                 old.parameterObject, old.targetType, old.cacheKey, old.boundSql);
       }
-
+      //加载懒加载属性
       this.metaResultObject.setValue(property, this.resultLoader.loadResult());
     }
 
