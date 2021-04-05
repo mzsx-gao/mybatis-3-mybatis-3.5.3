@@ -28,6 +28,7 @@ import org.apache.ibatis.session.Configuration;
 public class StaticSqlSource implements SqlSource {
 
   private final String sql;
+  //这个参数是将sql中的#{}中的参数封装成parameterMappings，源码在SqlSourceBuilder#parse#String sql = parser.parse(originalSql)
   private final List<ParameterMapping> parameterMappings;
   private final Configuration configuration;
 

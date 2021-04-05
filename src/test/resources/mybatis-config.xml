@@ -25,11 +25,14 @@
 	</typeAliases>
 
   <plugins>
-      <plugin interceptor="my_demo.interceptors.ThresholdInterceptor">
-          <property name="threshold" value="10"></property>
-      </plugin>
+      <!--<plugin interceptor="my_demo.interceptors.ThresholdInterceptor">-->
+          <!--<property name="threshold" value="10"></property>-->
+      <!--</plugin>-->
       <!--<plugin interceptor="my_demo.interceptors.ExecutorInterceptor"/>-->
       <!--<plugin interceptor="my_demo.interceptors.ResultSetHandInterceptor"/>-->
+      <plugin interceptor="mybatis.page.plugin.PageInterceptor">
+          <property name="name" value="gao"/>
+      </plugin>
   </plugins>
 
 	<!--配置environment环境 -->
