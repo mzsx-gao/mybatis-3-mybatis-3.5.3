@@ -85,4 +85,6 @@
 		SELECT id,userName,realName,sex,mobile FROM t_user
 	</select>
 
+    <cache/>
+
 </mapper>

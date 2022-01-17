@@ -193,6 +193,7 @@ public class Configuration {
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
           ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
+
   /*mapper文件中配置cache节点的 二级缓存*/
   protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
 

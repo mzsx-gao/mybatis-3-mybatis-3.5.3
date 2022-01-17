@@ -30,6 +30,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
+ * mapper 接口和对应的代理对象工厂的注册中心
  */
 public class MapperRegistry {
 
@@ -40,7 +41,6 @@ public class MapperRegistry {
     this.config = config;
   }
 
-  @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
