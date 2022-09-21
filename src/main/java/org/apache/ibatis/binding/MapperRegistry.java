@@ -40,7 +40,7 @@ public class MapperRegistry {
   public MapperRegistry(Configuration config) {
     this.config = config;
   }
-
+  //获取mapper接口的代理对象
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
@@ -65,7 +65,7 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
-        //实例化Mapper接口的代理工程类，并将信息添加至knownMappers
+        //实例化Mapper接口的代理工厂类，并将信息添加至knownMappers
         knownMappers.put(type, new MapperProxyFactory<>(type));
 
         //解析包含注解的接口，即mapper接口中用注解(如@Select)标识的接口，在mapper.xml文件中没有对应的sql语句的

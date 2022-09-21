@@ -39,11 +39,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
- * @author Lasse Voss
- * @author Kazuki Shimizu
- *
  * 封装了 Mapper 接口中对应方法的信息，以及对应的 sql 语句的信息；
  * 它是 mapper 接口与映射配置文件中 sql 语句的桥梁；
  * MapperMethod 对象不记录任何状态信息，所以它可以在多个代理对象之间共享

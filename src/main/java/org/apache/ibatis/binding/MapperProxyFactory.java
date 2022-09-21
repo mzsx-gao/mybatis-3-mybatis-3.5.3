@@ -29,8 +29,8 @@ import org.apache.ibatis.session.SqlSession;
 public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;
-  // key是mapper接口中的某个方法的method对象，value是对应的MapperMethod，MapperMethod对象不记录任何状态信息，
-  // 所以它可以在多个代理对象之间共享
+  // key是mapper接口中的某个方法的method对象，value是对应的MapperMethod，
+  // MapperMethod对象不记录任何状态信息，所以它可以在多个代理对象之间共享
   private final Map<Method, MapperMethod> methodCache = new ConcurrentHashMap<>();
 
   public MapperProxyFactory(Class<T> mapperInterface) {

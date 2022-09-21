@@ -7,7 +7,7 @@
  	<settings>
 		<!-- 设置自动驼峰转换 -->
 		<setting name="mapUnderscoreToCamelCase" value="true" />
-		<!--全局全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为true-->
+		<!--全局开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为true-->
 		<setting name="cacheEnabled" value="true"/>
 
 		<!--延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。 特定关联关系中可通过设置fetchType属性来覆盖该项的开关状态。默认值为false -->
@@ -24,16 +24,16 @@
 		<package name="my_demo.entity" />
 	</typeAliases>
 
-    <plugins>
-      <!--<plugin interceptor="my_demo.interceptors.ThresholdInterceptor">-->
-          <!--<property name="threshold" value="10"></property>-->
+    <!--<plugins>-->
+      <!--&lt;!&ndash;<plugin interceptor="my_demo.interceptors.ThresholdInterceptor">&ndash;&gt;-->
+          <!--&lt;!&ndash;<property name="threshold" value="10"></property>&ndash;&gt;-->
+      <!--&lt;!&ndash;</plugin>&ndash;&gt;-->
+      <!--&lt;!&ndash;<plugin interceptor="my_demo.interceptors.ExecutorInterceptor"/>&ndash;&gt;-->
+      <!--&lt;!&ndash;<plugin interceptor="my_demo.interceptors.ResultSetHandInterceptor"/>&ndash;&gt;-->
+      <!--<plugin interceptor="mybatis.page.plugin.PageInterceptor">-->
+          <!--<property name="name" value="gao"/>-->
       <!--</plugin>-->
-      <!--<plugin interceptor="my_demo.interceptors.ExecutorInterceptor"/>-->
-      <!--<plugin interceptor="my_demo.interceptors.ResultSetHandInterceptor"/>-->
-      <plugin interceptor="mybatis.page.plugin.PageInterceptor">
-          <property name="name" value="gao"/>
-      </plugin>
-  </plugins>
+  <!--</plugins>-->
 
 	<!--配置environment环境 -->
 	<environments default="development">

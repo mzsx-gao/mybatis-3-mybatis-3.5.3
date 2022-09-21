@@ -13,8 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-		id, userName, realName, sex, mobile, email, note,
-		position_id
+		id,sex, userName, realName,  mobile, email, note,position_id
 	</sql>
 
     <select id="selectByPrimaryKey" resultType="TUser">
@@ -85,6 +84,7 @@
 		SELECT id,userName,realName,sex,mobile FROM t_user
 	</select>
 
+    <!-- 开启二级缓存 -->
     <cache/>
 
 </mapper>

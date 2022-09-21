@@ -675,9 +675,16 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         } else if (!constructorMappings.isEmpty()) {
             return createParameterizedResultObject(rsw, resultType, constructorMappings, constructorArgTypes,
                     constructorArgs, columnPrefix);
-        } else if (resultType.isInterface() || metaType.hasDefaultConstructor()) {
+        }
+        else if (resultType.isInterface() || metaType.hasDefaultConstructor()) {
             return objectFactory.create(resultType);
-        } else if (shouldApplyAutomaticMappings(resultMap, false)) {
+        }
+        /**
+         * 注意如果对象没有默认的构造函数就会走这里
+         * 此时会将查询结果集按顺序映射到对象构造函数参数上，如果结果中参数类型和对象属性类型一样的话，就会映射上，可能会乱套了
+         * 所以使用mybatis主要要让对象必须有默认的构造函数
+         */
+        else if (shouldApplyAutomaticMappings(resultMap, false)) {
             return createByConstructorSignature(rsw, resultType, constructorArgTypes, constructorArgs);
         }
         throw new ExecutorException("Do not know how to create an instance of " + resultType);

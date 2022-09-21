@@ -58,7 +58,7 @@ public class SimpleExecutor extends BaseExecutor {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
-      //创建StatementHandler对象
+      //创建StatementHandler对象，内部封装了ParameterHandler和ResultSetHandler
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
       //StatementHandler对象创建stmt,并使用parameterHandler对占位符进行处理
       stmt = prepareStatement(handler, ms.getStatementLog());
@@ -91,7 +91,7 @@ public class SimpleExecutor extends BaseExecutor {
     Connection connection = getConnection(statementLog);
     // 通过不同的StatementHandler，利用connnection创建statement
     stmt = handler.prepare(connection, transaction.getTimeout());
-    // 处理占位符,替换"?"
+    // 处理占位符,替换"?",内部调用ParameterHandler处理
     handler.parameterize(stmt);
     return stmt;
   }
